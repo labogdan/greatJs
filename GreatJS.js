@@ -257,6 +257,71 @@ func = function() {
 
 func.goTo().print();
 
+/*
+ * revealing module pattern
+ * showing how to declare, use, extend public and private methods and data
+ * also demonstrates using apply() to implement a controller, based on calling context
+ * 
+ */
+
+
+var Main = Main || function() {
+    
+    var privateVar = 1234;
+    
+    var map = { // used to map variable to the method that will be called
+        'key1' : _pageOneController,
+        'key2' : _pageTwoController
+    };
+    
+    var _pageOneController = function () { // the _ preceding the method name is a cue that it is private
+        
+    };
+
+    var _pageTwoController = function () {
+        
+    };
+    
+    var init = function (argument) {
+        
+        map[argument].apply(); // calls the method that maps to argument
+        
+    };
+    
+    return {
+        init : init // make public to the outside world
+    }
+
+}(); // instantiate the object
+
+Main.init('key1'); // run init(), which picks the method to run
+
+var extendMain = extendMain || function (Main) {
+    
+    var myProp = 'something'; // this is a private variable in Main()
+    
+    Main.doDomethingElse = function () { // this is a public method in Main()
+      
+    };
+    
+    return Main;
+}(Main || {});
+
+// hijinx to redefine console.log, to only print if global (ugh) var debug is set to true
+// uses proxy pattern
+
+(function () {
+    var proxy = console.log;
+    if (typeof (debug) != 'undefined' && debug == true) {
+        console.log = function (arg) {
+            proxy.apply (this, arguments);
+        }
+    } else {
+        console.log = function () {};
+    }
+})();
+
+
 /*********************************************************************************************************************
  * JQUERY CHEAT SHEET																								 *
  * 																													 *
